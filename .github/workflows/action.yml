@@ -1,7 +1,6 @@
 # 워크플로우 -> 자동화 할 작업의 설계서 -> action.yml
 #
-
-name: Test PR Activity Types
+name: Pull Request Activity Types
 
 on:
   pull_request:
@@ -9,25 +8,32 @@ on:
     branches: [main]
 
 jobs:
-  handle-pr:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Show PR event type
-        run: echo Event action: ${{ github.event.action }}
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Do action based on type
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Test results
+        run: echo "Tests completed for PR ${{ github.event.action }}"
+
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup temporary files
         run: |
-          if [[ "${{ github.event.action }}" == "opened" ]]; then
-            echo "✅ PR opened: run tests"
-            npm install
-            npm test
-          elif [[ "${{ github.event.action }}" == "synchronize" ]]; then
-            echo "🔄 New commits pushed to PR: run tests again"
-            npm install
-            npm test
-          elif [[ "${{ github.event.action }}" == "closed" ]]; then
-            echo "🧹 PR closed: do cleanup"
-            # 예: rm -rf tmp/
-          else
-            echo "❓ Unexpected action: ${{ github.event.action }}"
-          fi
+          echo "Cleaning up temporary files for closed PR"
+          # 여기에 실제 정리 작업 추가
+          echo "Cleanup completed"
