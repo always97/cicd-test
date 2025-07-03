@@ -8,10 +8,10 @@ jobs: # jobs:
     runs-on: ubuntu-latest
     steps: # step 정의
       - name: Checkout Code
-        use: actions/checkout@v4 # action 사용
+        uses: actions/checkout@v4 # action 사용
 
       - name: install nodejs
-        use: actions/setup-node@v4 # action 사용
+        uses: actions/setup-node@v4 # action 사용
         with:
           node-version: "22" # node 버전 설정
 
