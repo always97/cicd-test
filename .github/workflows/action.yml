@@ -4,8 +4,22 @@
 name: first workflow
 on: push # 이벤트 트리거
 jobs: # jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # action 사용
+
+      - name: install deps
+        run: npm ci # ci -> clean install -> package-lock.json에 정의된 의존성 설치
+
+      - name: run lint
+        run: npm run lint # 린트 실행
+
   build: # job의 이름
     runs-on: ubuntu-latest
+
+    needs: lint # lint job이 성공해야 실행됨
     steps: # step 정의
       - name: Checkout Code
         uses: actions/checkout@v4 # action 사용
@@ -21,14 +35,3 @@ jobs: # jobs:
       - name: run build
         run: npm run build # 빌드 실행
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4 # action 사용
-
-      - name: install deps
-        run: npm ci # ci -> clean install -> package-lock.json에 정의된 의존성 설치
-
-      - name: run lint
-        run: npm run lint # 린트 실행
