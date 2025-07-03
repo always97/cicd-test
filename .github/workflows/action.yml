@@ -35,5 +35,5 @@ jobs:
       - name: Cleanup temporary files
         run: |
           echo "Cleaning up temporary files for closed PR"
-          # 여기에 실제 정리 작업 추가
+          # 여기에 실제 정리 작업 추가.
           echo "Cleanup completed"
