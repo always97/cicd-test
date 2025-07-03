@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show PR event type
-        run: echo "Event action: ${{ github.event.action }}"
+        run: echo Event action: ${{ github.event.action }}
 
       - name: Do action based on type
         run: |
