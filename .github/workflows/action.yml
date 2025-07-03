@@ -4,7 +4,7 @@
 name: first workflow
 on: push # 이벤트 트리거
 jobs: # jobs:
-  hello_world: # job의 이름
+  build: # job의 이름
     runs-on: ubuntu-latest
     steps: # step 정의
       - name: Checkout Code
