@@ -7,5 +7,16 @@ jobs: # jobs:
   hello_world: # job의 이름
     runs-on: ubuntu-latest
     steps: # step 정의
-      - name: Hello World # step의 이름
-        run: echo "Hello, World!" # run : <cli 명령어>
+      - name: Checkout Code
+        use: actions/checkout@v4 # action 사용
+
+      - name: install nodejs
+        uses: actions/setup-node@v4 # action 사용
+        with:
+          node-version: "22" # node 버전 설정
+
+      - name: install deps
+        run: npm ci # ci -> clean install -> package-lock.json에 정의된 의존성 설치
+
+      - name: run build
+        run: npm run build # 빌드 실행
