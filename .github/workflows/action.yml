@@ -1,37 +1,33 @@
 # 워크플로우 -> 자동화 할 작업의 설계서 -> action.yml
 #
 
-name: first workflow
-on: push # 이벤트 트리거
-jobs: # jobs:
-  lint:
+name: Test PR Activity Types
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+    branches: [main]
+
+jobs:
+  handle-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4 # action 사용
+      - name: Show PR event type
+        run: echo "Event action: ${{ github.event.action }}"
 
-      - name: install deps
-        run: npm ci # ci -> clean install -> package-lock.json에 정의된 의존성 설치
-
-      - name: run lint
-        run: npm run lint # 린트 실행
-
-  build: # job의 이름
-    runs-on: ubuntu-latest
-
-    needs: lint # lint job이 성공해야 실행됨
-    steps: # step 정의
-      - name: Checkout Code
-        uses: actions/checkout@v4 # action 사용
-
-      - name: install nodejs
-        uses: actions/setup-node@v4 # action 사용
-        with:
-          node-version: "22" # node 버전 설정
-
-      - name: install deps
-        run: npm ci # ci -> clean install -> package-lock.json에 정의된 의존성 설치
-
-      - name: run build
-        run: npm run build # 빌드 실행
-
+      - name: Do action based on type
+        run: |
+          if [[ "${{ github.event.action }}" == "opened" ]]; then
+            echo "✅ PR opened: run tests"
+            npm install
+            npm test
+          elif [[ "${{ github.event.action }}" == "synchronize" ]]; then
+            echo "🔄 New commits pushed to PR: run tests again"
+            npm install
+            npm test
+          elif [[ "${{ github.event.action }}" == "closed" ]]; then
+            echo "🧹 PR closed: do cleanup"
+            # 예: rm -rf tmp/
+          else
+            echo "❓ Unexpected action: ${{ github.event.action }}"
+          fi
